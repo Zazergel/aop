@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  aop:
+    build: ./
+    container_name: aop
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/orders
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+    volumes:
+      - aop-logs:/app/logs
+
+  db:
+    image: postgres:14-alpine
+    container_name: db
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=orders
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+  aop-logs:
